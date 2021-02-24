@@ -26,8 +26,6 @@ exports.gymList = async (req, res, next) => {
 
 exports.gymCreate = async (req, res, next) => {
   try {
-    console.log(req.user);
-
     const newGym = await Gym.create(req.body);
     res.status(201).json(newGym);
   } catch (error) {

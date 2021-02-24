@@ -1,10 +1,14 @@
 const express = require("express");
 
-const { classList, classBook } = require("../controllers/classControllers");
+const {
+  classList,
+  classBook,
+  fetchClass,
+} = require("../controllers/classControllers");
 const router = express.Router();
 
 router.param("classId", async (req, res, next, classId) => {
-  const foundClass = await fetchGym(classId, next);
+  const foundClass = await fetchClass(classId, next);
   if (foundClass) {
     req.class = foundClass;
     next();

@@ -1,5 +1,9 @@
+#config
+config.json 
+
 #media
 media
+
 # Logs
 logs
 *.log

@@ -46,4 +46,4 @@ db.sequelize.sync();
 // db.sequelize.sync({ force: true });
 app.listen(8000);
 
-//yarn add express cors sequelize sequelize-cli sequelize-slugify pg pg-hstore multer bcrypt passport passport-local passport-jwt
+//yarn add @sendgrid/mail --save
