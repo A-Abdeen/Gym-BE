@@ -5,6 +5,7 @@ const {
   classBook,
   fetchClass,
   classCancel,
+  classUpdate,
 } = require("../controllers/classControllers");
 const router = express.Router();
 
@@ -25,6 +26,8 @@ router.get("/", classList);
 
 router.put("/:classId/book", classBook);
 
-router.delete("/:classId/cancel", classCancel);
+router.put("/:classId", classUpdate);
+
+router.put("/:classId/cancel", classCancel);
 
 module.exports = router;

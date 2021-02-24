@@ -41,9 +41,19 @@ exports.classList = async (req, res, next) => {
       include: {
         model: User,
         as: "users",
+        attributes: ["id"],
       },
     });
     res.json(classes);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.classUpdate = async (req, res, next) => {
+  try {
+    const updatedClass = await req.class.update(req.body);
+    res.status(201).json(updatedClass);
   } catch (error) {
     next(error);
   }
@@ -57,32 +67,32 @@ exports.classBook = async (req, res, next) => {
         as: "classes",
       },
     });
-    const foundClass = req.class;
-    if (
-      user.classes.some(
-        (_class) =>
-          _class.time === foundClass.time && _class.date === foundClass.date //check if user booked class with same time
-      )
-    )
-      next({ message: "You already have a class at this time" });
+    // if (
+    //   user.classes.some(
+    //     (_class) =>
+    //       _class.time === req.class.time && _class.date === req.class.date //check if user booked class with same time
+    //   )
+    // )
+    //   next({ message: "You already have a class at this time" });
 
-    if (
-      user.classes.filter((_class) => _class.date === foundClass.date).length >= //check if user already has 3 (or more) of classes on this date
-      3
-    )
-      next({ message: `Max Classes on ${foundClass.date} reached` });
-    await user.addClass(req.class.id);
-    // sendMail(user, foundClass);
-    res.status(201).json({
-      id: user.id,
-      username: user.username,
-      password: user.password,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      userType: user.userType,
-      classes: [...user.classes, foundClass],
+    // if (
+    //   user.classes.filter((_class) => _class.date === req.class.date).length >= //check if user already has 3 (or more) of classes on this date
+    //   3
+    // )
+    //   next({ message: `Max Classes on ${req.class.date} reached` });
+    let updatedClass = await req.class.update({
+      bookedSeats: +req.class.bookedSeats + 1,
     });
+    await user.addClass(req.class.id);
+    updatedClass = await Class.findByPk(req.class.id, {
+      include: {
+        model: User,
+        as: "users",
+        attributes: ["id"],
+      },
+    });
+    // sendMail(user, foundClass);
+    res.status(201).json(updatedClass);
   } catch (error) {
     next(error);
   }
@@ -96,25 +106,26 @@ exports.classCancel = async (req, res, next) => {
         as: "classes",
       },
     });
-    const foundClass = req.class;
-    let floatTime =
-      +req.class.time.split(":")[0] + +req.class.time.split(":")[1] / 60; //convert string 24H time to float hours
-    let checkTime =
-      Date.now() + 3 * 3600000 < // current date in gmt + 3 hours in milliseconds
-      Date.parse(foundClass.date) + floatTime * 3600000; //date of class in milliseconds + float hours in milliseconds
-    if (checkTime) {
-      await user.removeClass(req.class.id);
-      res.status(201).json({
-        id: user.id,
-        username: user.username,
-        password: user.password,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        userType: user.userType,
-        classes: user.classes.filter((_class) => _class.id !== req.class.id),
-      });
-    } else next({ message: "Class already started" });
+    // let floatTime =
+    //   +req.class.time.split(":")[0] + +req.class.time.split(":")[1] / 60; //convert string 24H time to float hours
+    // let checkTime =
+    //   Date.now() + 3 * 3600000 < // current date in gmt + 3 hours in milliseconds
+    //   Date.parse(req.class.date) + floatTime * 3600000; //date of class in milliseconds + float hours in milliseconds
+    // if (checkTime) {
+    let updatedClass = await req.class.update({
+      bookedSeats: +req.class.bookedSeats - 1,
+    });
+    await updatedClass.removeUser(req.body.userId);
+    updatedClass = await Class.findByPk(req.class.id, {
+      include: {
+        model: User,
+        as: "users",
+        attributes: ["id"],
+      },
+    });
+    console.log(updatedClass.toJSON());
+    res.status(201).json(updatedClass);
+    // } else next({ message: "Class already started" });
   } catch (error) {
     next(error);
   }
