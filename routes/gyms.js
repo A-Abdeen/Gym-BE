@@ -26,14 +26,12 @@ router.get("/", gymList);
 
 router.post(
   "/",
-  passport.authenticate("jwt", { session: false }),
   //   upload.single("image"),
   gymCreate
 );
 
 router.post(
   "/:gymId/classes",
-  passport.authenticate("jwt", { session: false }),
   //   upload.single("image"),
   classCreate
 );

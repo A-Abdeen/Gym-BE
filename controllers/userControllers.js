@@ -28,6 +28,10 @@ exports.signin = async (req, res, next) => {
   const payload = {
     id: user.id,
     username: user.username,
+    email: user.email,
+    userType: user.userType,
+    firstName: user.firstName,
+    lastName: user.lastName,
     exp: Date.now() + JWT_EXPIRATION_MS,
   };
   const token = jwt.sign(JSON.stringify(payload), JWT_SECRET);
