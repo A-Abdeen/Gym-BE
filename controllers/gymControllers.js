@@ -27,15 +27,9 @@ exports.gymList = async (req, res, next) => {
 exports.gymCreate = async (req, res, next) => {
   try {
     console.log(req.user);
-    if (req.user.userType === "admin") {
-      const newGym = await Gym.create(req.body);
-      res.status(201).json(newGym);
-    } else {
-      next({
-        status: 401,
-        message: "You are not authorized to create a Gym",
-      });
-    }
+
+    const newGym = await Gym.create(req.body);
+    res.status(201).json(newGym);
   } catch (error) {
     next(error);
   }
@@ -43,16 +37,9 @@ exports.gymCreate = async (req, res, next) => {
 
 exports.classCreate = async (req, res, next) => {
   try {
-    if (req.user.userType === "admin") {
-      req.body.gymId = req.gym.id;
-      const newClass = await Class.create(req.body);
-      res.status(201).json(newClass);
-    } else {
-      next({
-        status: 401,
-        message: "You are not authorized to create a Class",
-      });
-    }
+    req.body.gymId = req.gym.id;
+    const newClass = await Class.create(req.body);
+    res.status(201).json(newClass);
   } catch (error) {
     next(error);
   }
