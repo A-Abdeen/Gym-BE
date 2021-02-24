@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       time: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.STRING,
         allowNull: false,
       },
     },

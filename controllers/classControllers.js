@@ -58,8 +58,21 @@ exports.classBook = async (req, res, next) => {
       },
     });
     const foundClass = req.class;
+    if (
+      user.classes.some(
+        (_class) =>
+          _class.time === foundClass.time && _class.date === foundClass.date //check if user booked class with same time
+      )
+    )
+      next({ message: "You already have a class at this time" });
+
+    if (
+      user.classes.filter((_class) => _class.date === foundClass.date).length >= //check if user already has 3 (or more) of classes on this date
+      3
+    )
+      next({ message: `Max Classes on ${foundClass.date} reached` });
     await user.addClass(req.class.id);
-    sendMail(user, foundClass);
+    // sendMail(user, foundClass);
     res.status(201).json({
       id: user.id,
       username: user.username,
@@ -84,17 +97,24 @@ exports.classCancel = async (req, res, next) => {
       },
     });
     const foundClass = req.class;
-    await user.removeClass(req.class.id);
-    res.status(201).json({
-      id: user.id,
-      username: user.username,
-      password: user.password,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      userType: user.userType,
-      classes: [...user.classes.find((_class) => _class.id !== req.class.id)],
-    });
+    let floatTime =
+      +req.class.time.split(":")[0] + +req.class.time.split(":")[1] / 60; //convert string 24H time to float hours
+    let checkTime =
+      Date.now() + 3 * 3600000 < // current date in gmt + 3 hours in milliseconds
+      Date.parse(foundClass.date) + floatTime * 3600000; //date of class in milliseconds + float hours in milliseconds
+    if (checkTime) {
+      await user.removeClass(req.class.id);
+      res.status(201).json({
+        id: user.id,
+        username: user.username,
+        password: user.password,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userType: user.userType,
+        classes: user.classes.filter((_class) => _class.id !== req.class.id),
+      });
+    } else next({ message: "Class already started" });
   } catch (error) {
     next(error);
   }

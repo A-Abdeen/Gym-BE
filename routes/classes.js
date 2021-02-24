@@ -4,6 +4,7 @@ const {
   classList,
   classBook,
   fetchClass,
+  classCancel,
 } = require("../controllers/classControllers");
 const router = express.Router();
 
@@ -23,5 +24,7 @@ router.param("classId", async (req, res, next, classId) => {
 router.get("/", classList);
 
 router.put("/:classId/book", classBook);
+
+router.delete("/:classId/cancel", classCancel);
 
 module.exports = router;
