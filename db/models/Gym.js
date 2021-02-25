@@ -13,15 +13,18 @@ module.exports = (sequelize, DataTypes) => {
       },
       address: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: "81 Tashan Ave, Jidhafs",
       },
       lat: {
         type: DataTypes.FLOAT,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: 26.218976870620022,
       },
       lng: {
         type: DataTypes.FLOAT,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: 50.54495015328686,
       },
     },
     { timestamps: false }

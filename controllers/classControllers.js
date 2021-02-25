@@ -78,7 +78,7 @@ exports.classBook = async (req, res, next) => {
         attributes: ["id"],
       },
     });
-    // sendMail(user, updatedClass);
+    sendMail(user, updatedClass);
     res.status(201).json(updatedClass);
   } catch (error) {
     next(error);
