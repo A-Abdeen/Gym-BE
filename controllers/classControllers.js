@@ -1,9 +1,7 @@
 const { Class, User } = require("../db/models");
 const User_Classes = require("../db/models/User_Classes");
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(
-  "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"
-);
+sgMail.setApiKey("ADD_KEY_HERE");
 
 const sendMail = async (user, foundClass) => {
   const msg = {
