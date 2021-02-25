@@ -11,6 +11,18 @@ module.exports = (sequelize, DataTypes) => {
       slug: {
         type: DataTypes.STRING,
       },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lat: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      lng: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
     },
     { timestamps: false }
   );
