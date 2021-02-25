@@ -7,12 +7,12 @@ sgMail.setApiKey(
 
 const sendMail = async (user, foundClass) => {
   const msg = {
-    to: "mahmoodalwatani@gmail.com",
+    to: `${user.email}`,
     from: "mahmoodalwatani@hotmail.com",
-    subject: `Booking confirmation - ${foundClass.name} on ${foundClass.date}`,
+    subject: `Booking confirmation for ${foundClass.name} on ${foundClass.date}`,
     text: `Dear ${user.firstName},
       Thank you for booking a class with us! Your class of ${foundClass.name} will be on ${foundClass.date} at ${foundClass.time}.`,
-    html: `<p> Dear ${user.firstName},
+    html: `<p> Dear ${user.firstName},\n
     Thank you for booking a class with us! Your class of ${foundClass.name} will be on ${foundClass.date} at ${foundClass.time}.</p>`,
   };
   try {
@@ -67,19 +67,6 @@ exports.classBook = async (req, res, next) => {
         as: "classes",
       },
     });
-    // if (
-    //   user.classes.some(
-    //     (_class) =>
-    //       _class.time === req.class.time && _class.date === req.class.date //check if user booked class with same time
-    //   )
-    // )
-    //   next({ message: "You already have a class at this time" });
-
-    // if (
-    //   user.classes.filter((_class) => _class.date === req.class.date).length >= //check if user already has 3 (or more) of classes on this date
-    //   3
-    // )
-    //   next({ message: `Max Classes on ${req.class.date} reached` });
     let updatedClass = await req.class.update({
       bookedSeats: +req.class.bookedSeats + 1,
     });
@@ -91,7 +78,7 @@ exports.classBook = async (req, res, next) => {
         attributes: ["id"],
       },
     });
-    // sendMail(user, foundClass);
+    // sendMail(user, updatedClass);
     res.status(201).json(updatedClass);
   } catch (error) {
     next(error);
@@ -106,12 +93,7 @@ exports.classCancel = async (req, res, next) => {
         as: "classes",
       },
     });
-    // let floatTime =
-    //   +req.class.time.split(":")[0] + +req.class.time.split(":")[1] / 60; //convert string 24H time to float hours
-    // let checkTime =
-    //   Date.now() + 3 * 3600000 < // current date in gmt + 3 hours in milliseconds
-    //   Date.parse(req.class.date) + floatTime * 3600000; //date of class in milliseconds + float hours in milliseconds
-    // if (checkTime) {
+
     let updatedClass = await req.class.update({
       bookedSeats: +req.class.bookedSeats - 1,
     });
@@ -125,7 +107,6 @@ exports.classCancel = async (req, res, next) => {
     });
     console.log(updatedClass.toJSON());
     res.status(201).json(updatedClass);
-    // } else next({ message: "Class already started" });
   } catch (error) {
     next(error);
   }

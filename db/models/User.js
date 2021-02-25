@@ -16,21 +16,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       email: {
         type: DataTypes.STRING,
-        // allowNull: false,
-        // unique: true,
-        // validate: {
-        //   isEmail: {
-        //     args: true,
-        //     msg: "Must be a valid email address",
-        //   },
+        allowNull: false,
+        unique: true,
       },
       firstName: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       lastName: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       userType: {
         type: DataTypes.ENUM("admin", "user"),
